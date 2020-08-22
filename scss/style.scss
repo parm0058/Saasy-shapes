@@ -1,0 +1,179 @@
+/**********************************************
+ * STARTER CODE
+ **********************************************/
+
+.shapes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 50px;
+  justify-items: center;
+  align-items: center;
+}
+
+%square {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+}
+
+%circle {
+  @extend %square;
+  border-radius: 50%;
+  background-color: red;
+}
+
+%pentagon {
+  position: relative;
+  width: 54px;
+  box-sizing: content-box;
+  border-width: 50px 18px 0;
+  border-style: solid;
+  border-color: red transparent;
+
+  &::before {
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: -85px;
+    left: -18px;
+    border-width: 0 45px 35px;
+    border-style: solid;
+    border-color: transparent transparent red;
+  }
+}
+
+%hexagon {
+  width: 100px;
+  height: 55px;
+  position: relative;
+  background: red;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 25px solid red;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 25px solid red;
+  }
+}
+
+%octagon {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  background: red;
+
+  &::before {
+    content: "";
+    width: 42px;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 29px solid #fff;
+    border-right: 29px solid #fff;
+    border-bottom: 29px solid red;
+  }
+
+  &::after {
+    content: "";
+    width: 42px;
+    height: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-left: 29px solid #fff;
+    border-right: 29px solid #fff;
+    border-top: 29px solid red;
+  }
+}
+
+$colors: red,
+blue,
+green,
+purple,
+orange;
+
+$shapes: square,
+circle,
+pentagon,
+hexagon,
+octagon;
+
+/**********************************************
+ * YOUR CODE BELOW
+ **********************************************/
+@mixin shapesMixin ($shape, $color) {
+  @extend .shapes;
+
+  @if $shape=='square' {
+    @extend %square;
+  }
+
+  @else if $shape=='circle' {
+    @extend %circle;
+  }
+
+  @else if $shape=='pentagon' {
+    @extend %pentagon;
+    border-color: $color transparent;
+
+    &::before {
+      border-color: transparent transparent $color;
+    }
+
+  }
+
+  @else if $shape=='hexagon' {
+    @extend %hexagon;
+
+    &::after {
+      border-top: 25px solid $color;
+    }
+
+    &::before {
+      border-bottom: 25px solid $color;
+    }
+  }
+
+  @else if $shape=='octagon' {
+    @extend %octagon;
+
+    &::after {
+      border-top: 25px solid $color;
+    }
+
+    &::before {
+      border-bottom: 25px solid $color;
+    }
+  }
+
+  background-color: $color;
+  border-color: $color;
+
+}
+
+@each $shape in $shapes {
+  @each $color in $colors {
+    .#{$shape}-#{$color} {
+      @include shapesMixin($shape, $color);
+    }
+  }
+}
